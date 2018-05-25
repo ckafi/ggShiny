@@ -40,12 +40,22 @@ server <- function(input, output) {
                         value = 1, step = 0.1),
                     sliderInput("stroke", "Stroke",
                         min = 0.1 , max = 5,
-                        value = 1, step = 0.1))
+                        value = 1, step = 0.1)),
+
+                "histogram" = tagList(
+                    selectInput("x", "Select x",
+                        choices = names(inputData()),
+                        selected = input$x),
+
+                    if(!is.factor(inputData()[[input$x]])) {
+                        m <- max(inputData()[[input$x]])
+                        sliderInput("binwidth", "Size of bins",
+                            min = 0 , max = m,
+                            value = m / 10, step = m / 100)
+                        })
 
                     ))
     }
-
-    observe({print(input$shape)})
 
     
     dispatch_geom_plot <- function() {
@@ -55,7 +65,13 @@ server <- function(input, output) {
                         y = get(input$y)),
                         shape = strtoi(input$shape),
                         size = input$size,
-                        stroke = input$stroke)
+                        stroke = input$stroke),
+
+                "histogram" = geom_histogram(
+                    aes(x = get(input$x)),
+                    stat = if(is.factor(inputData()[[input$x]]))
+                        { "count" } else { "bin"},
+                    binwidth = input$binwidth)
                 ))
     }
 }

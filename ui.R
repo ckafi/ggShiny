@@ -38,7 +38,9 @@ plotpanel <- tabPanel("Plot",
     sidebarLayout(
         sidebarPanel(
             selectInput("plotselect", "Select Plot",
-                choices = list("Scatter plot" = "point")),
+                choices = list(
+                    "Scatter plot" = "point",
+                    "Histogram" = "histogram")),
 
             tags$hr(),
 
