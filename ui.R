@@ -38,17 +38,14 @@ plotpanel <- tabPanel("Plot",
     sidebarLayout(
         sidebarPanel(
             selectInput("plotselect", "Select Plot",
-                choices = list("Scatter plot" = "point"),
-                selected = 1),
+                choices = list("Scatter plot" = "point")),
 
             tags$hr(),
 
             uiOutput("aes")
             ),
 
-        mainPanel(
-            plotOutput('plot')
-            )
+        mainPanel(plotOutput('plot'))
         )
     )
 
