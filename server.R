@@ -40,8 +40,26 @@ server <- function(input, output) {
             dispatch_geom_plot() +
             labs(title = input$title,
                 x = input$xlab,
-                y = input$ylab)
+                y = input$ylab) +
+            theme_elements()
     })
+
+    theme_elements <- function() {
+        return(
+            switch(input$xgrid,
+                "all" = theme(),
+                "major" = theme(panel.grid.minor.x = element_blank()),
+                "none" = theme(panel.grid.minor.x = element_blank(),
+                    panel.grid.major.x = element_blank())
+                ) +
+            switch(input$ygrid,
+                "all" = theme(),
+                "major" = theme(panel.grid.minor.y = element_blank()),
+                "none" = theme(panel.grid.minor.y = element_blank(),
+                    panel.grid.major.y = element_blank())
+                )
+            )
+    }
 
 
     dispatch_aes_ui <- function() {
@@ -80,6 +98,7 @@ server <- function(input, output) {
     
     dispatch_geom_plot <- function() {
         return(switch(input$plotselect,
+
                 "point" = geom_point(
                     aes(x = get(input$x),
                         y = get(input$y)),

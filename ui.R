@@ -47,6 +47,16 @@ plotpanel <- tabPanel("Plot",
                 value = "x-Label"),
             textInput("ylab", label = "y-Label:",
                 value = "y-Label"),
+            radioButtons("xgrid", label = "Vertical Grid Lines",
+                choices = list(
+                    "All" = "all",
+                    "Only major" = "major",
+                    "None" = "none")),
+            radioButtons("ygrid", label = "Horizontal Grid Lines",
+                choices = list(
+                    "All" = "all",
+                    "Only major" = "major",
+                    "None" = "none")),
 
             tags$hr(),
 
