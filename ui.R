@@ -47,7 +47,12 @@ plotpanel <- tabPanel("Plot",
             uiOutput("aes")
             ),
 
-        mainPanel(plotOutput('plot'))
+        mainPanel(
+            plotOutput('plot'),
+            downloadButton(
+                outputId = "downPlot",
+                label = "Download")
+            )
         )
     )
 

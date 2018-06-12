@@ -16,13 +16,24 @@ server <- function(input, output) {
         ggplot(inputData())
     })
 
+    plot_full <- reactive({
+        plot_base() + theme_linedraw() + dispatch_geom_plot()
+    })
+
     output$contents <- renderTable({inputData()})
 
     output$aes <- renderUI({dispatch_aes_ui()})
 
-    output$plot <- renderPlot({
-        plot_base() + dispatch_geom_plot()
-    })
+    output$plot <- renderPlot({plot_full()})
+
+    output$downPlot <- downloadHandler(
+        filename = "plot.png",
+        content = function(file) {
+            plot_full()
+            ggsave(file, device="png")
+        },
+        contentType = "image/png"
+        )
 
     dispatch_aes_ui <- function() {
         return(switch(input$plotselect,
