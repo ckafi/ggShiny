@@ -2,6 +2,26 @@ library(ggplot2)
 
 server <- function(input, output) {
 
+    output$contents <- renderTable({inputData()})
+
+    output$aes <- renderUI({dispatch_aes_ui()})
+
+    output$plot <- renderPlot({plot_full()})
+
+    output$downPlot <- downloadHandler(
+        filename = function() {
+            paste(
+                if(input$title == "") "plot"
+                else input$title,
+                ".png", sep="")
+        },
+        content = function(file) {
+            plot_full()
+            ggsave(file, device="png")
+        },
+        contentType = "image/png"
+        )
+
     inputData <- reactive({
         req(input$file)
         read.csv(input$file$datapath,
@@ -10,30 +30,19 @@ server <- function(input, output) {
             quote = input$quote)
     })
 
-
-
     plot_base <- reactive({
         ggplot(inputData())
     })
 
     plot_full <- reactive({
-        plot_base() + theme_linedraw() + dispatch_geom_plot()
+        plot_base() +
+            theme_linedraw() +
+            dispatch_geom_plot() +
+            labs(title = input$title,
+                x = input$xlab,
+                y = input$ylab)
     })
 
-    output$contents <- renderTable({inputData()})
-
-    output$aes <- renderUI({dispatch_aes_ui()})
-
-    output$plot <- renderPlot({plot_full()})
-
-    output$downPlot <- downloadHandler(
-        filename = "plot.png",
-        content = function(file) {
-            plot_full()
-            ggsave(file, device="png")
-        },
-        contentType = "image/png"
-        )
 
     dispatch_aes_ui <- function() {
         return(switch(input$plotselect,

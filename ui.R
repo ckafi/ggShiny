@@ -41,6 +41,12 @@ plotpanel <- tabPanel("Plot",
                 choices = list(
                     "Scatter plot" = "point",
                     "Histogram" = "histogram")),
+            textInput("title", label = "Title:",
+                value = "Title"),
+            textInput("xlab", label = "x-Label:",
+                value = "x-Label"),
+            textInput("ylab", label = "y-Label:",
+                value = "y-Label"),
 
             tags$hr(),
 
