@@ -37,31 +37,34 @@ filepanel <- tabPanel("File Upload",
 plotpanel <- tabPanel("Plot",
     sidebarLayout(
         sidebarPanel(
-            selectInput("plotselect", "Select Plot",
-                choices = list(
-                    "Scatter plot" = "point",
-                    "Histogram" = "histogram")),
-            textInput("title", label = "Title:",
-                value = "Title"),
-            textInput("xlab", label = "x-Label:",
-                value = "x-Label"),
-            textInput("ylab", label = "y-Label:",
-                value = "y-Label"),
-            radioButtons("xgrid", label = "Vertical Grid Lines",
-                choices = list(
-                    "All" = "all",
-                    "Only major" = "major",
-                    "None" = "none")),
-            radioButtons("ygrid", label = "Horizontal Grid Lines",
-                choices = list(
-                    "All" = "all",
-                    "Only major" = "major",
-                    "None" = "none")),
+            tabsetPanel(
+                tabPanel("Main options",
+                    selectInput("plotselect", "Select Plot",
+                        choices = list(
+                            "Scatter plot" = "point",
+                            "Histogram" = "histogram")),
+                    textInput("title", label = "Title:",
+                        value = "Title"),
+                    textInput("xlab", label = "x-Label:",
+                        value = "x-Label"),
+                    textInput("ylab", label = "y-Label:",
+                        value = "y-Label"),
+                    selectInput("xgrid", label = "Vertical Grid Lines",
+                        choices = list(
+                            "All" = "all",
+                            "Only major" = "major",
+                            "None" = "none")),
+                    selectInput("ygrid", label = "Horizontal Grid Lines",
+                        choices = list(
+                            "All" = "all",
+                            "Only major" = "major",
+                            "None" = "none")),
 
-            tags$hr(),
+                    tags$hr()),
 
-            uiOutput("aes")
-            ),
+                tabPanel("Plot specific options",
+                    uiOutput("aes"))
+            )),
 
         mainPanel(
             plotOutput('plot'),

@@ -6,7 +6,7 @@ server <- function(input, output) {
 
     output$aes <- renderUI({dispatch_aes_ui()})
 
-    output$plot <- renderPlot({plot_full()})
+    output$plot <- renderPlot({plot_()})
 
     output$downPlot <- downloadHandler(
         filename = function() {
@@ -16,7 +16,7 @@ server <- function(input, output) {
                 ".png", sep="")
         },
         content = function(file) {
-            plot_full()
+            plot_()
             ggsave(file, device="png")
         },
         contentType = "image/png"
@@ -30,18 +30,15 @@ server <- function(input, output) {
             quote = input$quote)
     })
 
-    plot_base <- reactive({
-        ggplot(inputData())
-    })
-
-    plot_full <- reactive({
-        plot_base() +
-            theme_linedraw() +
-            dispatch_geom_plot() +
+    plot_ <- reactive({
+        ggplot(inputData()) +
             labs(title = input$title,
                 x = input$xlab,
                 y = input$ylab) +
+            dispatch_geom_plot() +
+            theme_linedraw() +
             theme_elements()
+
     })
 
     theme_elements <- function() {
@@ -78,7 +75,8 @@ server <- function(input, output) {
                         value = 1, step = 0.1),
                     sliderInput("stroke", "Stroke",
                         min = 0.1 , max = 5,
-                        value = 1, step = 0.1)),
+                        value = 1, step = 0.1)
+                    ),
 
                 "histogram" = tagList(
                     selectInput("x", "Select x",
@@ -100,11 +98,10 @@ server <- function(input, output) {
         return(switch(input$plotselect,
 
                 "point" = geom_point(
-                    aes(x = get(input$x),
-                        y = get(input$y)),
-                        shape = strtoi(input$shape),
-                        size = input$size,
-                        stroke = input$stroke),
+                    aes(x = get(input$x), y = get(input$y)),
+                    shape = strtoi(input$shape),
+                    size = input$size,
+                    stroke = input$stroke), 
 
                 "histogram" = geom_histogram(
                     aes(x = get(input$x)),
