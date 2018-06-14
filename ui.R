@@ -49,13 +49,18 @@ plotpanel <- tabPanel(
     sidebarPanel(
       tabsetPanel(
         tabPanel(
-          "Main options",
+          "Main Options",
           selectInput("plotselect", "Select Plot",
             choices = list(
               "Scatter plot" = "point",
               "Histogram" = "histogram"
             )
           ),
+          tags$hr(),
+          uiOutput("aes")
+        ),
+        tabPanel(
+          "Labeling",
           textInput("title",
             label = "Title:",
             value = "Title"
@@ -83,14 +88,7 @@ plotpanel <- tabPanel(
               "Only major" = "major",
               "None" = "none"
             )
-          ),
-
-          tags$hr()
-        ),
-
-        tabPanel(
-          "Plot specific options",
-          uiOutput("aes")
+          )
         )
       )
     ),

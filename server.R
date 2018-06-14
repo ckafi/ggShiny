@@ -20,7 +20,7 @@ server <- function(input, output) {
           "plot"
         } else {
           input$title
-        } ,
+        },
         ".png",
         sep = ""
       )
