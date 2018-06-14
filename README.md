@@ -8,7 +8,7 @@ packages:
 
 ```
 $ R
-> install.packages(c("ggplot2", "shiny", "shinythemes"))
+> install.packages(c("ggplot2", "shiny", "shinythemes","colourpicker"))
 ```
 
 ## Running

@@ -1,4 +1,5 @@
 library(shinythemes)
+library(colourpicker)
 
 filepanel <- tabPanel(
   "File Upload",
@@ -60,7 +61,7 @@ plotpanel <- tabPanel(
           uiOutput("aes")
         ),
         tabPanel(
-          "Labeling",
+          "Labeling and colour(s)",
           textInput("title",
             label = "Title:",
             value = "Title"
@@ -93,7 +94,10 @@ plotpanel <- tabPanel(
               "Only major" = "major",
               "None" = "none"
             )
-          )
+          ),
+          tags$hr(),
+          colourInput("col1", "Select primary colour", "black"),
+          colourInput("col2", "Select secondary colour (for some plots)", "black")
         )
       )
     ),

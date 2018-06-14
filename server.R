@@ -129,7 +129,9 @@ server <- function(input, output) {
         aes(x = get(input$x), y = get(input$y)),
         shape = strtoi(input$shape),
         size = input$size,
-        stroke = input$stroke
+        stroke = input$stroke,
+        color = input$col1,
+        fill = input$col2
       ),
 
       "histogram" = geom_histogram(
@@ -139,7 +141,9 @@ server <- function(input, output) {
         } else {
           "bin"
         },
-        binwidth = input$binwidth
+        binwidth = input$binwidth,
+        fill = input$col1,
+        color = input$col2
       )
     ))
   }
