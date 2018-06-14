@@ -98,6 +98,23 @@ plotpanel <- tabPanel(
           tags$hr(),
           colourInput("col1", "Select primary colour", "black"),
           colourInput("col2", "Select secondary colour (for some plots)", "black")
+        ),
+        tabPanel(
+          "Reference Line",
+          checkboxInput("draw_ref_line",
+            label = "Draw reference line",
+            value = FALSE
+          ),
+          selectInput("ref_line", "Select Reference Line",
+            choices = list(
+              "Vertical Line" = "vline",
+              "Horizontal Line" = "hline",
+              "AB-Line" = "abline"
+            )
+          ),
+          numericInput("interc", label = "Intercept", value = 0),
+          numericInput("slope", label = "Slope (for AB-line)", value = 0),
+          colourInput("refcol", "Color", "black")
         )
       )
     ),

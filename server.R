@@ -49,36 +49,11 @@ server <- function(input, output) {
         y = input$ylab
       ) +
       dispatch_geom_plot() +
+      reference_line() +
       theme_linedraw() +
       theme_grid() +
-      if (input$rotate_labels) {
-        theme(axis.text.x = element_text(angle = 90, hjust = 1))
-      } else {
-        theme()
-      }
+      theme_ticklabels()
   })
-
-  theme_grid <- function() {
-    return(
-      switch(input$xgrid,
-        "all" = theme(),
-        "major" = theme(panel.grid.minor.x = element_blank()),
-        "none" = theme(
-          panel.grid.minor.x = element_blank(),
-          panel.grid.major.x = element_blank()
-        )
-      ) +
-        switch(input$ygrid,
-          "all" = theme(),
-          "major" = theme(panel.grid.minor.y = element_blank()),
-          "none" = theme(
-            panel.grid.minor.y = element_blank(),
-            panel.grid.major.y = element_blank()
-          )
-        )
-    )
-  }
-
 
   dispatch_aes_ui <- function() {
     return(switch(input$plotselect,
@@ -122,6 +97,29 @@ server <- function(input, output) {
   }
 
 
+  reference_line <- function() {
+    if (input$draw_ref_line) {
+      switch(input$ref_line,
+        "vline" = geom_vline(
+          xintercept = input$interc,
+          color = input$refcol
+        ),
+        "hline" = geom_hline(
+          yintercept = input$interc,
+          color = input$refcol
+        ),
+        "abline" = geom_abline(
+          intercept = input$interc,
+          slope = input$slope,
+          color = input$refcol
+        )
+      )
+    } else {
+      NULL
+    }
+  }
+
+
   dispatch_geom_plot <- function() {
     return(switch(input$plotselect,
 
@@ -146,5 +144,34 @@ server <- function(input, output) {
         color = input$col2
       )
     ))
+  }
+
+  theme_grid <- function() {
+    return(
+      switch(input$xgrid,
+        "all" = theme(),
+        "major" = theme(panel.grid.minor.x = element_blank()),
+        "none" = theme(
+          panel.grid.minor.x = element_blank(),
+          panel.grid.major.x = element_blank()
+        )
+      ) +
+        switch(input$ygrid,
+          "all" = theme(),
+          "major" = theme(panel.grid.minor.y = element_blank()),
+          "none" = theme(
+            panel.grid.minor.y = element_blank(),
+            panel.grid.major.y = element_blank()
+          )
+        )
+    )
+  }
+
+  theme_ticklabels <- function() {
+    if (input$rotate_labels) {
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))
+    } else {
+      theme()
+    }
   }
 }
