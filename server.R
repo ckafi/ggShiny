@@ -26,7 +26,7 @@ server <- function(input, output) {
       )
     },
     content = function(file) {
-      plot_()
+      plot_() + theme(aspect.ratio = 0.5)
       ggsave(file, device = "png")
     },
     contentType = "image/png"
@@ -50,10 +50,15 @@ server <- function(input, output) {
       ) +
       dispatch_geom_plot() +
       theme_linedraw() +
-      theme_elements()
+      theme_grid() +
+      if (input$rotate_labels) {
+        theme(axis.text.x = element_text(angle = 90, hjust = 1))
+      } else {
+        theme()
+      }
   })
 
-  theme_elements <- function() {
+  theme_grid <- function() {
     return(
       switch(input$xgrid,
         "all" = theme(),

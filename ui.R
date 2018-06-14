@@ -73,6 +73,11 @@ plotpanel <- tabPanel(
             label = "y-Label:",
             value = "y-Label"
           ),
+          checkboxInput("rotate_labels",
+            label = "Rotate tick labels on x-axis",
+            value = FALSE
+          ),
+          tags$hr(),
           selectInput("xgrid",
             label = "Vertical Grid Lines",
             choices = list(
