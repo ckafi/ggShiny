@@ -1,6 +1,9 @@
 library(ggplot2)
 
 server <- function(input, output) {
+  writeLines("\n\n === Server restart ===")
+  print(Sys.time())
+
   output$contents <- renderTable({
     inputData()
   })
@@ -33,12 +36,16 @@ server <- function(input, output) {
   )
 
   inputData <- reactive({
-    req(input$file)
-    read.csv(input$file$datapath,
-      header = input$header,
-      sep = input$sep,
-      quote = input$quote
-    )
+    if (input$example_data) {
+      ChickWeight
+    } else {
+      req(input$file)
+      read.csv(input$file$datapath,
+        header = input$header,
+        sep = input$sep,
+        quote = input$quote
+      )
+    }
   })
 
   plot_ <- reactive({
@@ -84,7 +91,6 @@ server <- function(input, output) {
           choices = names(inputData()),
           selected = input$x
         ),
-
         if (!is.factor(inputData()[[input$x]])) {
           m <- max(inputData()[[input$x]])
           sliderInput("binwidth", "Size of bins",
@@ -92,44 +98,42 @@ server <- function(input, output) {
             value = m / 10, step = m / 100
           )
         }
+      ),
+
+      "line" = tagList(
+        selectInput("x", "Select x",
+          choices = names(inputData())
+        ),
+        selectInput("y", "Select y",
+          choices = names(inputData())
+        ),
+        selectInput("group", "Group by",
+          choices = c("None", names(inputData()))
+        ),
+        selectInput("linetype", "Linetype",
+          choices = c(
+            "solid", "dashed", "dotted",
+            "dotdash", "longdash", "twodash"
+          ),
+          selected = "solid"
+        ),
+        sliderInput("size", "Size",
+          min = 0.1, max = 5,
+          value = 1, step = 0.1
+        )
       )
     ))
   }
 
 
-  reference_line <- function() {
-    if (input$draw_ref_line) {
-      switch(input$ref_line,
-        "vline" = geom_vline(
-          xintercept = input$interc,
-          color = input$refcol
-        ),
-        "hline" = geom_hline(
-          yintercept = input$interc,
-          color = input$refcol
-        ),
-        "abline" = geom_abline(
-          intercept = input$interc,
-          slope = input$slope,
-          color = input$refcol
-        )
-      )
-    } else {
-      NULL
-    }
-  }
-
-
   dispatch_geom_plot <- function() {
-    return(switch(input$plotselect,
+    g <- switch(input$plotselect,
 
       "point" = geom_point(
         aes(x = get(input$x), y = get(input$y)),
         shape = strtoi(input$shape),
         size = input$size,
-        stroke = input$stroke,
-        color = input$col1,
-        fill = input$col2
+        stroke = input$stroke
       ),
 
       "histogram" = geom_histogram(
@@ -139,12 +143,48 @@ server <- function(input, output) {
         } else {
           "bin"
         },
-        binwidth = input$binwidth,
-        fill = input$col1,
-        color = input$col2
+        binwidth = input$binwidth
+      ),
+
+      "line" = geom_line(
+        aes(
+          x = get(input$x),
+          y = get(input$y),
+          group = input$group
+        ),
+        linetype = input$linetype,
+        size = input$size
       )
-    ))
+    )
+    g$aes_params$colour <- input$col1
+    g$aes_params$fill <- input$col2
+    return(g)
   }
+
+
+  reference_line <- function() {
+    if (input$draw_ref_line) {
+      refline <- switch(input$ref_line,
+        "vline" = geom_vline(
+          xintercept = input$interc
+        ),
+        "hline" = geom_hline(
+          yintercept = input$interc
+        ),
+        "abline" = geom_abline(
+          intercept = input$interc,
+          slope = input$slope
+        )
+      )
+      refline$aes_params$colour <- input$refcol
+      refline$aes_params$linetype <- input$ref_linetype
+      refline$aes_params$size <- input$refsize
+      refline
+    } else {
+      NULL
+    }
+  }
+
 
   theme_grid <- function() {
     return(
@@ -166,6 +206,7 @@ server <- function(input, output) {
         )
     )
   }
+
 
   theme_ticklabels <- function() {
     if (input$rotate_labels) {

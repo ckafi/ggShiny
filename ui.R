@@ -5,6 +5,7 @@ filepanel <- tabPanel(
   "File Upload",
   sidebarLayout(
     sidebarPanel(
+      checkboxInput("example_data", "Use Example", FALSE),
       fileInput("file", "Choose CSV File",
         multiple = TRUE,
         accept = c(
@@ -54,7 +55,8 @@ plotpanel <- tabPanel(
           selectInput("plotselect", "Select Plot",
             choices = list(
               "Scatter plot" = "point",
-              "Histogram" = "histogram"
+              "Histogram" = "histogram",
+              "Line Graph" = "line"
             )
           ),
           tags$hr(),
@@ -114,6 +116,17 @@ plotpanel <- tabPanel(
           ),
           numericInput("interc", label = "Intercept", value = 0),
           numericInput("slope", label = "Slope (for AB-line)", value = 0),
+          selectInput("ref_linetype", "Linetype",
+            choices = c(
+              "solid", "dashed", "dotted",
+              "dotdash", "longdash", "twodash"
+            ),
+            selected = "solid"
+          ),
+          sliderInput("refsize", "Size",
+            min = 0.1, max = 5,
+            value = 0.5, step = 0.1
+          ),
           colourInput("refcol", "Color", "black")
         )
       )
