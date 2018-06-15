@@ -19,11 +19,7 @@ server <- function(input, output) {
   output$downPlot <- downloadHandler(
     filename = function() {
       paste(
-        if (input$title == "") {
-          "plot"
-        } else {
-          input$title
-        },
+        if (input$title == "") "plot" else input$title,
         ".png",
         sep = ""
       )
@@ -150,7 +146,7 @@ server <- function(input, output) {
         aes(
           x = get(input$x),
           y = get(input$y),
-          group = input$group
+          group = if (input$group == "None") 1 else get(input$group)
         ),
         linetype = input$linetype,
         size = input$size
