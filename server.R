@@ -18,11 +18,7 @@ server <- function(input, output) {
 
   output$downPlot <- downloadHandler(
     filename = function() {
-      paste(
-        if (input$title == "") "plot" else input$title,
-        ".png",
-        sep = ""
-      )
+      paste(input$title, ".png", sep = "")
     },
     content = function(file) {
       plot_() + theme(aspect.ratio = 0.5)
@@ -117,6 +113,15 @@ server <- function(input, output) {
           min = 0.1, max = 5,
           value = 1, step = 0.1
         )
+      ),
+
+      "boxplot" = tagList(
+        selectInput("x", "Select x",
+          choices = names(inputData())
+        ),
+        selectInput("y", "Select y",
+          choices = names(inputData())
+        )
       )
     ))
   }
@@ -150,8 +155,16 @@ server <- function(input, output) {
         ),
         linetype = input$linetype,
         size = input$size
+      ),
+
+      "boxplot" = geom_boxplot(
+        aes(
+          x = get(input$x),
+          y = get(input$y)
+        )
       )
     )
+
     g$aes_params$colour <- input$col1
     g$aes_params$fill <- input$col2
     return(g)

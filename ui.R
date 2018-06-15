@@ -56,7 +56,8 @@ plotpanel <- tabPanel(
             choices = list(
               "Scatter plot" = "point",
               "Histogram" = "histogram",
-              "Line Graph" = "line"
+              "Line Graph" = "line",
+              "Boxplot" = "boxplot"
             )
           ),
           tags$hr(),
@@ -99,7 +100,7 @@ plotpanel <- tabPanel(
           ),
           tags$hr(),
           colourInput("col1", "Select primary colour", "black"),
-          colourInput("col2", "Select secondary colour (for some plots)", "black")
+          colourInput("col2", "Select secondary colour (for some plots)", "white")
         ),
         tabPanel(
           "Reference Line",
