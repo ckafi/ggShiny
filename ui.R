@@ -57,7 +57,8 @@ plotpanel <- tabPanel(
               "Scatter plot" = "point",
               "Histogram" = "histogram",
               "Line Graph" = "line",
-              "Boxplot" = "boxplot"
+              "Boxplot" = "boxplot",
+              "Heatmap" = "heatmap"
             )
           ),
           tags$hr(),

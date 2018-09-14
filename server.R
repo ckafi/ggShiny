@@ -4,9 +4,11 @@ server <- function(input, output) {
   writeLines("\n\n === Server restart ===")
   print(Sys.time())
 
-  output$contents <- renderTable({
-    inputData()
-  })
+  output$contents <- renderTable(
+    {inputData()},
+    striped = TRUE,
+    hover = TRUE
+  )
 
   output$aes <- renderUI({
     dispatch_aes_ui()
@@ -29,7 +31,7 @@ server <- function(input, output) {
 
   inputData <- reactive({
     if (input$example_data) {
-      ChickWeight
+      diamonds[1:1000,]
     } else {
       req(input$file)
       read.csv(input$file$datapath,
@@ -49,9 +51,13 @@ server <- function(input, output) {
       ) +
       dispatch_geom_plot() +
       reference_line() +
-      theme_linedraw() +
+      theme_linedraw() + # ggplot theme 
       theme_grid() +
-      theme_ticklabels()
+      theme_ticklabels() +
+      scale_fill_gradient(
+        low = input$col1,
+        high = input$col2
+      ) # only for heatmap
   })
 
   dispatch_aes_ui <- function() {
@@ -68,7 +74,7 @@ server <- function(input, output) {
           choices = 0:25,
           selected = "19"
         ),
-        checkboxInput("jitter", " Jitter",
+        checkboxInput("jitter", "Jitter",
           value = FALSE
         ),
         sliderInput("size", "Size",
@@ -125,6 +131,31 @@ server <- function(input, output) {
         selectInput("y", "Select y",
           choices = names(inputData())
         )
+      ),
+
+      "heatmap" = tagList(
+        selectInput("x", "Select x",
+          choices = names(inputData()),
+          selected = input$x
+        ),
+        selectInput("y", "Select y",
+          choices = names(inputData()),
+          selected = input$y
+        ),
+        if (!is.factor(inputData()[[input$x]])) {
+          m <- max(inputData()[[input$x]])
+          sliderInput("binwidth_x", "Size of bins (x)",
+            min = 0, max = m,
+            value = m / 10, step = m / 100
+          )
+        },
+        if (!is.factor(inputData()[[input$y]])) {
+          m <- max(inputData()[[input$y]])
+          sliderInput("binwidth_y", "Size of bins (y)",
+            min = 0, max = m,
+            value = m / 10, step = m / 100
+          )
+        }
       )
     ))
   }
@@ -170,11 +201,24 @@ server <- function(input, output) {
           x = get(input$x),
           y = get(input$y)
         )
+      ),
+
+      "heatmap" = geom_bin2d(
+        aes(
+          x = get(input$x),
+          y = get(input$y),
+        ),
+        binwidth = c(
+          input$binwidth_x,
+          input$binwidth_y
+        )
       )
     )
 
-    g$aes_params$colour <- input$col1
-    g$aes_params$fill <- input$col2
+    if(input$plotselect != "heatmap") {
+      g$aes_params$colour <- input$col1
+      g$aes_params$fill <- input$col2
+    }
     return(g)
   }
 
