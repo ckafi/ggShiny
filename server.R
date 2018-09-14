@@ -68,6 +68,9 @@ server <- function(input, output) {
           choices = 0:25,
           selected = "19"
         ),
+        checkboxInput("jitter", " Jitter",
+          value = FALSE
+        ),
         sliderInput("size", "Size",
           min = 0.1, max = 5,
           value = 1, step = 0.1
@@ -134,7 +137,12 @@ server <- function(input, output) {
         aes(x = get(input$x), y = get(input$y)),
         shape = strtoi(input$shape),
         size = input$size,
-        stroke = input$stroke
+        stroke = input$stroke,
+        position = if(input$jitter) {
+          "jitter"
+        } else {
+          "identity"
+        }
       ),
 
       "histogram" = geom_histogram(
