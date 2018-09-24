@@ -50,6 +50,8 @@ plotpanel <- tabPanel(
   sidebarLayout(
     sidebarPanel(
       tabsetPanel(
+        id = "settings",
+
         tabPanel(
           "Main Options",
           selectInput("plotselect", "Select Plot",
@@ -147,6 +149,7 @@ plotpanel <- tabPanel(
 
 
 ui <- navbarPage(
+  id = "main",
   title = "ggShiny",
   theme = shinytheme("yeti"),
   filepanel,
