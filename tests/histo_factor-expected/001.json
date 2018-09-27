@@ -75,8 +75,8 @@
             "top": 252
           },
           "mapping": {
-            "y": null,
-            "x": "get(input$x)"
+            "x": "get(input$x)",
+            "y": "get(input$y)"
           },
           "range": {
             "left": 39.1506849315068,

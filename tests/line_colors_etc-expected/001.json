@@ -108,8 +108,7 @@
           },
           "mapping": {
             "x": "get(input$x)",
-            "y": "get(input$y)",
-            "group": "if (input$group == \"None\") 1 else get(input$group)"
+            "y": "get(input$y)"
           },
           "range": {
             "left": 41.1506849315068,

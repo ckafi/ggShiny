@@ -19,9 +19,9 @@ server <- function(input, output) {
   })
 
   output$downPlot <- downloadHandler(
-    filename = function() {
+    filename = reactive({
       paste(input$title, ".png", sep = "")
-    },
+    }),
     content = function(file) {
       plot_() + theme(aspect.ratio = 0.5)
       ggsave(file, device = "png")
@@ -42,16 +42,17 @@ server <- function(input, output) {
     }
   })
 
+
   plot_ <- reactive({
-    ggplot(inputData()) +
-      labs(
-        title = input$title,
-        x = input$xlab,
-        y = input$ylab
-      ) +
+    ggplot(inputData(),
+      aes(x = get(input$x), y = get(input$y))) +
       dispatch_geom_plot() +
+      labs(title = input$title, # Add labels
+           x = input$xlab,
+           y = input$ylab) +
       reference_line() +
       theme_linedraw() + # ggplot theme 
+      theme(legend.title=element_blank()) +
       theme_grid() +
       theme_ticklabels() +
       scale_fill_gradient(
@@ -165,49 +166,32 @@ server <- function(input, output) {
     g <- switch(input$plotselect,
 
       "point" = geom_point(
-        aes(x = get(input$x), y = get(input$y)),
         shape = strtoi(input$shape),
         size = input$size,
         stroke = input$stroke,
-        position = if(input$jitter) {
-          "jitter"
-        } else {
-          "identity"
-        }
+        position = if(input$jitter) "jitter" else "identity"
       ),
 
       "histogram" = geom_histogram(
+        # this is needed, so the 'y -> input$y' mapping is deleted
+        inherit.aes = FALSE,
         aes(x = get(input$x)),
-        stat = if (is.factor(inputData()[[input$x]])) {
-          "count"
-        } else {
-          "bin"
-        },
+        stat = if (is.factor(inputData()[[input$x]])) "count" else "bin",
         binwidth = input$binwidth
       ),
 
-      "line" = geom_line(
-        aes(
-          x = get(input$x),
-          y = get(input$y),
-          group = if (input$group == "None") 1 else get(input$group)
-        ),
-        linetype = input$linetype,
-        size = input$size
-      ),
+      "line" = if (input$group == "None") {
+        geom_line(linetype = input$linetype,
+                  size = input$size)
+      } else {
+        geom_line(aes(linetype = get(input$group)),
+                  size = input$size)
+      },
 
       "boxplot" = geom_boxplot(
-        aes(
-          x = get(input$x),
-          y = get(input$y)
-        )
       ),
 
       "heatmap" = geom_bin2d(
-        aes(
-          x = get(input$x),
-          y = get(input$y),
-        ),
         binwidth = c(
           input$binwidth_x,
           input$binwidth_y
