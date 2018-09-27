@@ -1,7 +1,7 @@
 # This file defines the interface of the app. It should only contain markup.
 # Any logic should be put into server.R
 # Shiny defines the interface through nested layout components ("panels" and
-# "widgets). The root of this tree is the 'ui' variable, which can be found at
+# "widgets"). The root of this tree is the 'ui' variable, which can be found at
 # the end of this file.
 
 library(shinythemes)
@@ -59,7 +59,7 @@ filepanel <- tabPanel(
       )
     ),
 
-    # the main area with the interpreted content of the uploaded file
+    # The main area with the interpreted content of the uploaded file
     mainPanel(
       tableOutput(outputId = "contents")
     )
@@ -67,18 +67,18 @@ filepanel <- tabPanel(
 )
 
 
-# the panel for plot selection and display
+# The panel for plot selection and display
 plotpanel <- tabPanel(
   title = "Plot",
   # A sidebarLayout consists of a sidebar and a main area
   sidebarLayout(
 
     sidebarPanel(
-      # the sidebar consists of multiple tabs (a "tabset")
+      # The sidebar consists of multiple tabs (a "tabset")
       tabsetPanel(
         id = "settings", # id needed for testing
 
-        # the panel for plot selection and plot options
+        # The panel for plot selection and plot options
         tabPanel(
           title = "Main Options",
           selectInput(
@@ -91,12 +91,12 @@ plotpanel <- tabPanel(
                            "Heatmap"      = "heatmap")
           ),
           tags$hr(),
-          # the UI elements for the plot options are dynamically created in
+          # The UI elements for the plot options are dynamically created in
           # server.R
           uiOutput(outputId = "aes")
         ),
 
-        # the panel for plot colors and labels
+        # The panel for plot colors and labels
         tabPanel(
           title = "Labeling and colour(s)",
           textInput(
@@ -145,7 +145,7 @@ plotpanel <- tabPanel(
             value   = "white")
         ),
 
-        # the panel for the reference line
+        # The panel for the reference line
         tabPanel(
           title = "Reference Line",
           checkboxInput(
@@ -193,7 +193,7 @@ plotpanel <- tabPanel(
       )
     ),
 
-    # the main area with the generated plot
+    # The main area with the generated plot
     # and the download button
     mainPanel(
       plotOutput("plot"),
@@ -206,13 +206,13 @@ plotpanel <- tabPanel(
 )
 
 
-# This is the main entry point for the UI
+# This is the main entry point for the UI.
 # navbarPage creates a page with a top level navigation bar
 ui <- navbarPage(
-  id = "main", # the id is necessary for testing
+  id = "main", # The id is necessary for testing
   title = "ggShiny",
   theme = shinytheme("yeti"),
-  # the panels
+  # The panels
   filepanel,
   plotpanel
 )

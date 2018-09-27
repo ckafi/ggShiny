@@ -37,3 +37,6 @@ rsconnect/
 
 # Tag files
 tags
+
+# Test files
+Rplots.pdf
